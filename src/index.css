@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Hide the top of the scrollbar */
+.productList::-webkit-scrollbar {
+  width: 5px;
+  background: transparent;
+  border-radius: 8px;
+  margin-top: 30px; /* This doesn't work directly, see below for hiding top */
+}
+
+/* Style the scrollbar thumb */
+.productList::-webkit-scrollbar-thumb {
+  background: #1ead2a;
+  border-radius: 8px;
+  min-height: 20px;
+  position: relative;
+}
+
