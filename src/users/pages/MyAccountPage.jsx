@@ -3,6 +3,10 @@ import { login, logout, register } from "../../http";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../features/auth/authSlice";
 import useAuth from "../../hooks/useAuth";
+import SideNavBar from "../components/SideNavbar";
+import UserProfile from "../components/UserProfile";
+import UserOrders from "../components/UserOrders";
+import UserAddress from "../components/UserAddress";
 
 const MyAccountPage = () => {
     const dispatch = useDispatch();
@@ -11,6 +15,8 @@ const MyAccountPage = () => {
     const [registerName, setRegisterName] = useState("");
     const [registerEmail, setRegisterEmail] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
+    const [currentView, setCurrentView] = useState("profile");
+
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -263,15 +269,20 @@ const MyAccountPage = () => {
                     </div>
                 </div>
             ) : (
-                <>
-                    <h1>Hii {user.name} </h1>
-                    <button
-                        className="bg-blue-500 p-5 cursor-pointer"
-                        onClick={logoutHandler}
-                    >
-                        Logout
-                    </button>
-                </>
+                <div className="flex h-full bg-gray-100">
+                    <SideNavBar
+                        currentView={currentView}
+                        setCurrentView={setCurrentView}
+                        logoutHandler={logoutHandler}
+                    />
+                    <div className="flex-1 p-6">
+                        {currentView === "profile" && (
+                            <UserProfile user={user} />
+                        )}
+                        {currentView === "orders" && <UserOrders />}
+                        {currentView === "address" && <UserAddress />}
+                    </div>
+                </div>
             )}
         </div>
     );
