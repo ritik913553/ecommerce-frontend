@@ -11,6 +11,7 @@ const MyAccountPage = () => {
     const [registerName, setRegisterName] = useState("");
     const [registerEmail, setRegisterEmail] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
+    
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         try {

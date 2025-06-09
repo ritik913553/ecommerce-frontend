@@ -144,7 +144,10 @@ const products = [
     },
 ];
 
-const ProductTable = ({setIsEditModalOpen,setEditingProduct}) => {
+const ProductTable = ({ products, loading, setEditingProduct, setIsEditModalOpen}) => {
+
+      if (loading) return <p>Loading...</p>;
+  if (!products.length) return <p>No products found.</p>;
    
 
     const handleEditClick = (product) => {
