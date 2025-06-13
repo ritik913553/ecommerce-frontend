@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { updateProductById } from "../../http/index";
 
-const EditProductModal = ({ product, onClose, onSave }) => {
+const EditProductModal = ({
+  product,
+  onClose,
+  onSave,
+  setIsEditModalOpen,
+  onProductEdited,
+}) => {
   const [formData, setFormData] = useState({
     productName: "",
     category: "Electronics",
@@ -91,13 +97,15 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     // Optional: Return early if nothing changed
     if (Object.keys(updatedData).length === 0) {
       alert("No changes detected");
+      setIsEditModalOpen(false);
       return;
     }
 
     try {
       const res = await updateProductById(product._id, updatedData);
+      onProductEdited();
+      setIsEditModalOpen(false);
       console.log("Update response:", res);
-    
     } catch (error) {
       console.error("Update error:", error);
       alert("Failed to update product");
@@ -113,19 +121,20 @@ const EditProductModal = ({ product, onClose, onSave }) => {
           <h2 className="text-2xl font-semibold">Edit Product</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 cursor-pointer"
+            className="text-red-500 ml-100 hover:text-red-900 transition-colors duration-200 ease-in-out cursor-pointer p-2 rounded-full hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+            aria-label="Close"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
+              className="h-8 w-8" // Slightly larger icon
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              strokeWidth={2.5} // Thicker stroke
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
@@ -134,41 +143,55 @@ const EditProductModal = ({ product, onClose, onSave }) => {
 
         <form
           onSubmit={handleSubmit}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md"
         >
           {/* Product Name */}
-          <div>
-            <label className="block text-sm font-medium">Product Name</label>
+          <div className="space-y-2 animate-fadeIn">
+            <label className="block text-sm font-medium text-gray-700">
+              Product Name
+            </label>
             <input
               type="text"
               name="productName"
               value={formData.productName}
               maxLength={20}
               onChange={handleChange}
-              className="w-full border border-gray-400 rounded px-3 py-2 outline-[#3DA16C]"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-[#3DA16C] focus:border-transparent transition-all duration-200"
               placeholder="Enter product name"
             />
+            <p className="text-xs text-gray-500 text-right">
+              {formData.productName.length}/20
+            </p>
           </div>
 
           {/* Image Upload */}
-          <div className="md:row-span-3">
-            <label className="block text-sm font-medium">Product Images</label>
-            <div className="grid grid-cols-2 gap-2">
+          <div className="md:row-span-3 space-y-2 animate-fadeIn delay-100">
+            <label className="block text-sm font-medium text-gray-700">
+              Product Images
+            </label>
+            <div className="grid grid-cols-2 gap-3">
               {formData.images.length > 0 ? (
                 formData.images.map((img, i) => (
                   <div
                     key={i}
-                    className="border rounded p-2 flex justify-center items-center h-28 bg-gray-50"
+                    className="relative group border rounded-lg p-1 h-28 bg-gray-50 flex justify-center items-center"
                   >
                     <img
                       src={img}
                       alt={`preview-${i}`}
                       className="h-full object-contain"
                     />
+                    <button
+                      type="button"
+                      onClick={() => handleImageRemove(i)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    >
+                      ×
+                    </button>
                   </div>
                 ))
               ) : (
-                <div className="border rounded p-2 flex justify-center items-center h-28 bg-gray-50">
+                <div className="border rounded-lg p-2 flex justify-center items-center h-28 bg-gray-50">
                   <img
                     src="/images/shirt1.jpg"
                     alt="preview"
@@ -176,32 +199,59 @@ const EditProductModal = ({ product, onClose, onSave }) => {
                   />
                 </div>
               )}
+
               {Array.from({ length: 4 - formData.images.length }).map(
                 (_, i) => (
-                  <div
+                  <label
                     key={i}
-                    className="border border-dashed border-gray-300 h-28 flex items-center justify-center text-sm text-gray-500 bg-gray-50"
+                    htmlFor="image-upload"
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col justify-center items-center h-28 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
                   >
-                    Drop or click to upload
-                  </div>
+                    <svg
+                      className="w-6 h-6 text-gray-400 mb-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
+                    </svg>
+                    <span className="text-xs text-gray-500 text-center">
+                      Click to upload
+                    </span>
+                  </label>
                 )
               )}
             </div>
-            <p className="text-xs text-gray-500 mt-2">
+            <input
+              type="file"
+              id="image-upload"
+              accept="image/*"
+              multiple
+              // onChange={handleImageUpload}
+              className="hidden"
+            />
+            <p className="text-xs text-gray-500">
               Add at least 4 images. 1 can be a video. Make sure your photo has
               the best quality.
             </p>
           </div>
 
-          <div className="flex gap-x-2 w-full">
-            {/* Category */}
-            <div className="flex-1/2">
-              <label className="block text-sm font-medium">Category</label>
+          {/* Category & Collections */}
+          <div className="flex flex-col sm:flex-row gap-4 animate-fadeIn delay-200">
+            <div className="flex-1 space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Category
+              </label>
               <select
                 name="category"
-                className="w-full border outline-[#3DA16C] border-gray-400 rounded px-3 py-2"
                 value={formData.category}
                 onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-[#3DA16C] focus:border-transparent transition-all duration-200 appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiAjdjQ3NDc1NyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNoZXZyb24tZG93biI+PHBhdGggZD0ibTYgOSA2IDYgNi02Ii8+PC9zdmc+')] bg-no-repeat bg-[center_right_1rem]"
               >
                 <option>Men</option>
                 <option>Women</option>
@@ -210,14 +260,15 @@ const EditProductModal = ({ product, onClose, onSave }) => {
               </select>
             </div>
 
-            {/* Collections */}
-            <div className="flex-1/2">
-              <label className="block text-sm font-medium">Collections</label>
+            <div className="flex-1 space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Collections
+              </label>
               <select
                 name="gender"
-                className="w-full border rounded px-3 outline-[#3DA16C] border-gray-400 py-2"
                 value={formData.gender}
                 onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-[#3DA16C] focus:border-transparent transition-all duration-200 appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiAjdjQ3NDc1NyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNoZXZyb24tZG93biI+PHBhdGggZD0ibTYgOSA2IDYgNi02Ii8+PC9zdmc+')] bg-no-repeat bg-[center_right_1rem]"
               >
                 <option>Harry Potter</option>
                 <option>Barbie</option>
@@ -226,43 +277,64 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             </div>
           </div>
 
-          {/* Stock and Price */}
-          <div className="flex gap-x-3">
-            <div className="flex-1/2">
-              <label className="block text-sm font-medium">Stock</label>
+          {/* Stock & Price */}
+          <div className="flex flex-col sm:flex-row gap-4 animate-fadeIn delay-300">
+            <div className="flex-1 space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Stock
+              </label>
               <input
                 type="number"
                 name="stock"
+                min="0"
                 value={formData.stock}
                 onChange={handleChange}
-                className="w-full border outline-[#3DA16C] border-gray-400 rounded px-3 py-2"
-                placeholder="Input Stock"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-[#3DA16C] focus:border-transparent transition-all duration-200"
+                placeholder="Available quantity"
               />
             </div>
-            <div className="flex-1/2">
-              <label className="block text-sm font-medium">Price</label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                className="w-full outline-[#3DA16C] border-gray-400 border rounded px-3 py-2"
-                placeholder="Input Price"
-              />
+
+            <div className="flex-1 space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Price
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-2 text-gray-500">$</span>
+                <input
+                  type="number"
+                  name="price"
+                  min="0"
+                  step="0.01"
+                  value={formData.price}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg pl-8 pr-4 py-2 outline-none focus:ring-2 focus:ring-[#3DA16C] focus:border-transparent transition-all duration-200"
+                  placeholder="0.00"
+                />
+              </div>
             </div>
           </div>
 
           {/* Sizes */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Add Size</label>
-            <div className="flex flex-wrap gap-3">
+          <div className="animate-fadeIn delay-400">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Available Sizes
+            </label>
+            <div className="flex flex-wrap gap-2">
               {sizeOptions.map((option) => (
-                <label key={option} className="flex items-center gap-1 text-sm">
+                <label
+                  key={option}
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
+                    formData.sizes.includes(option)
+                      ? "bg-[#3DA16C] text-white shadow-md"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
                   <input
                     type="checkbox"
                     value={option}
                     checked={formData.sizes.includes(option)}
                     onChange={handleSizeChange}
+                    className="hidden"
                   />
                   {option}
                 </label>
@@ -271,61 +343,54 @@ const EditProductModal = ({ product, onClose, onSave }) => {
           </div>
 
           {/* Tags */}
-          <div>
-            <label className="block text-sm font-medium mb-1 mt-2">Tags</label>
+          <div className="animate-fadeIn delay-500">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tags
+            </label>
             <input
               type="text"
               name="tags"
               value={formData.tags}
               onChange={handleChange}
-              className="w-full border border-gray-400 outline-[#3DA16C] rounded px-3 py-2"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-[#3DA16C] focus:border-transparent transition-all duration-200"
               placeholder="e.g., funny, quote, black, oversized"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Write different tags with spaces
+              Separate tags with spaces
             </p>
           </div>
 
-          {/* Date */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Date</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="w-full border border-gray-400 outline-[#3DA16C] rounded px-3 py-2"
-            />
-          </div>
-
           {/* Description */}
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-1">
+          <div className="md:col-span-2 animate-fadeIn delay-600">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              maxLength={100}
-              rows={3}
-              className="w-full border border-gray-400 outline-[#3DA16C] rounded px-3 py-2"
-              placeholder="Write product description..."
+              maxLength={300}
+              rows={4}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-[#3DA16C] focus:border-transparent transition-all duration-200"
+              placeholder="Describe your product in detail..."
             ></textarea>
+            <p className="text-xs text-gray-500 text-right">
+              {formData.description.length}/300
+            </p>
           </div>
 
           {/* Action Buttons */}
-          <div className="md:col-span-2 flex justify-end gap-4">
+          <div className="md:col-span-2 flex justify-end gap-4 animate-fadeIn delay-700">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 font-bold bg-gray-300 text-gray-700 rounded-md text-sm hover:bg-gray-400"
+              className="px-6 py-2.5 bg-gray-200 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 font-bold bg-green-500 text-white rounded-md text-sm hover:bg-green-600"
+              className="px-6 py-2.5 bg-[#3DA16C] text-white font-medium rounded-lg text-sm hover:bg-[#2E8457] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#3DA16C] focus:ring-opacity-50 cursor-pointer"
             >
               Save Changes
             </button>
