@@ -9,7 +9,10 @@ import { FolderInput } from "lucide-react";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import EditProductModal from "../components/EditProductModal";
 
-import { getAllProducts, getProductsByCategory,searchProducts } from "../../http/index";
+import {
+  getAllProducts,
+  searchProducts,
+} from "../../http/index";
 
 const AdminProductList = () => {
   const [isAddNewProductOpen, setIsAddNewProductOpen] = useState(false);
@@ -24,13 +27,17 @@ const AdminProductList = () => {
   const [selectedCollection, setSelectedCollection] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(null); // for filtered results
 
-  useEffect(() => {
-    const fetchProducts = async () => {
+  const [currentPage, setCurrentPage] = useState(1); // for pagination
+  const [totalPages, setTotalPages] = useState(1);
+  const productsPerPage = 10;
+
+  const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await getAllProducts();
+        const res = await getAllProducts(currentPage, productsPerPage);
         console.log(res.data.products);
         setProducts(res.data.products);
+        setTotalPages(res.data.totalPages);
       } catch (err) {
         console.error("Error fetching products:", err);
       } finally {
@@ -38,17 +45,30 @@ const AdminProductList = () => {
       }
     };
 
+  useEffect(() => {
+    
     fetchProducts();
-  }, []);
+  }, [currentPage]);
 
   const handleSearch = async () => {
     try {
       setLoading(true);
-console.log(searchTerm)
-      const res = await searchProducts(searchTerm); 
+      setCurrentPage(1);
 
-      console.log(res.data.products);
+      console.log(searchTerm);
+      const res = await searchProducts({
+        query: searchTerm,
+        category: selectedCategory,
+        collection: selectedCollection,
+        currentPage,
+        limit: productsPerPage,
+      });
+
+      console.log("Res : ",res)
       setFilteredProducts(res.data.products);
+      setTotalPages(res.data.totalPages);
+      setCurrentPage(currentPage);
+    
     } catch (err) {
       console.error("Search error:", err);
       setFilteredProducts([]);
@@ -122,10 +142,10 @@ console.log(searchTerm)
                   className="p-3 border-1 outline-none text-lg text-gray-500  border-gray-300 rounded-md"
                 >
                   <option value="">All products</option>
-                  <option value="">Men</option>
-                  <option value="">Women</option>
-                  <option value="">Unisex</option>
-                  <option value="">kids</option>
+                  <option value="Men">Men</option>
+                  <option value="Women">Women</option>
+                  <option value="Unisex">Unisex</option>
+                  <option value="Kids">Kids</option>
                 </select>
               </div>
               <div className="flex flex-col gap-y-2">
@@ -138,9 +158,9 @@ console.log(searchTerm)
                   className="p-3 border-1 outline-none text-lg text-gray-500  border-gray-300 rounded-md"
                 >
                   <option value="">All</option>
-                  <option value="">Harry Poter</option>
-                  <option value="">GTA</option>
-                  <option value="">Barbie</option>
+                  <option value="Harry Poter">Harry Poter</option>
+                  <option value="Gta">Gta</option>
+                  <option value="Barbie">Barbie</option>
                 </select>
               </div>
               {/* search button  */}
@@ -174,35 +194,58 @@ console.log(searchTerm)
               />
             )}
           </div>
-          <div className="w-full flex items-center justify-center gap-x-6">
-            <div className="rounded-full p-2 bg-[#F6F6F6] text-xl text-gray-600">
-              <MdOutlineKeyboardArrowLeft />
-            </div>
-            <div className="rounded-full bg-[#F6F6F6] px-5 py-1  flex gap-x-4 text-gray-600">
-              <div className="rounded-full bg-green-500 px-3 py-1 cursor-pointer">
-                1
-              </div>
-              <div className="rounded-full bg-white px-3 py-1 cursor-pointer ">
-                2
-              </div>
-              <div className="rounded-full bg-white px-3 py-1 cursor-pointer ">
-                3
-              </div>
-              <div className="rounded-full bg-white px-3 py-1 cursor-pointer ">
-                4
-              </div>
-            </div>
-            <div className="rounded-full p-2 bg-[#F6F6F6] text-xl text-gray-600">
-              <MdChevronRight />
-            </div>
+          <div className="w-full flex items-center justify-center gap-x-4 mt-4">
+           <button
+  disabled={currentPage === 1}
+  className="cursor-pointer"
+  onClick={() =>
+    filteredProducts
+      ? handleSearch(currentPage - 1)
+      : setCurrentPage(p => Math.max(p - 1, 1))
+  }
+>
+  <MdOutlineKeyboardArrowLeft  className="cursor-pointer"/>
+</button>
+
+{Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+  <button
+  
+    key={page}
+    onClick={() =>
+      filteredProducts ? handleSearch(page) : setCurrentPage(page)
+    }
+    className={currentPage === page ? "bg-green-500  text-white " : "bg-white text-gray-600 "}
+  >
+    {page}
+  </button>
+))}
+
+<button
+  disabled={currentPage === totalPages}
+  className="cursor-pointer"
+  onClick={() =>
+    
+    filteredProducts
+      ? handleSearch(currentPage + 1)
+      : setCurrentPage(p => Math.min(p + 1, totalPages))
+  }
+>
+  <MdChevronRight className="cursor-pointer" />
+</button>
           </div>
         </div>
       ) : (
-        <AddProductForm />
+        <AddProductForm
+        onProductAdded={fetchProducts}
+          setIsAddNewProductOpen={setIsAddNewProductOpen}
+          onClose={() => setIsAddNewProductOpen(false)}
+        />
       )}
       {isEditModalOpen && (
         <div className=" bg-white   top-0 left-0 h-full w-full absolute z-50 flex items-start justify-center p-10">
           <EditProductModal
+           onProductEdited={fetchProducts}
+            setIsEditModalOpen={setIsEditModalOpen}
             product={editingProduct}
             onClose={() => setIsEditModalOpen(false)}
             // onSave={handleSaveProduct}

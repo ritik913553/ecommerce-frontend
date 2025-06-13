@@ -20,11 +20,13 @@ export const createProduct = (formData) =>
     headers: { "Content-Type": "multipart/form-data" },
   });
 
-export const getAllProducts = () => api.get("/api/products");
-export const getFeaturedProducts = () => api.get("/api/products/featured");
+export const getAllProducts = (page = 1, limit = 10) => 
+  api.get(`/api/products`,{ params: { page, limit } });
+
+export const getFeaturedProducts = (page = 1, limit = 10) => api.get("/api/products/featured",{ params: { page, limit } });
 export const getProductById = (id) => api.get(`/api/products/${id}`);
-export const searchProducts = (query) =>
-  api.get(`/api/products/search`,{params :{query}});
+export const searchProducts = ({ query, category = "", collection = "", page = 1, limit = 10 }) =>
+  api.get(`/api/products/search`,{params: { query, category, collection, page, limit }});
 export const getProductsByCategory = (category) =>
   api.get(`/api/products/category/${category}`);
 
