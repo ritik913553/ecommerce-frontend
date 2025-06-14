@@ -16,16 +16,16 @@ const AdminCustomerList = () => {
     const [searchTerm, setSearchTerm] = useState("");
 
     return (
-        <div className=" p-5 w-full bg-white h-full rounded-lg  flex flex-col">
+        <div className=" p-2 sm:p-5 w-full bg-white h-full rounded-lg  flex flex-col">
             {/* Table Header with Search */}
-            <div className=" flex justify-between items-center">
+            <div className=" flex sm:flex-row gap-y-2 flex-col justify-between sm:items-center">
                 <h2 className="text-2xl font-semibold">Customer List</h2>
                 <div className="relative">
                     <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
                         type="text"
                         placeholder="Search users..."
-                        className="pl-10 pr-4  outline-[#3DA16C] border-gray-400 py-2 border rounded-lg "
+                        className="pl-10 pr-4  outline-[#3DA16C] border-gray-400 py-1 sm:py-2 border rounded-lg "
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -33,7 +33,7 @@ const AdminCustomerList = () => {
             </div>
 
             {/* Users Table */}
-            <div className="overflow-auto productList flex-1 mt-5">
+            <div className="overflow-auto productList flex-1 mt-10 sm:mt-5">
                 <CustomerTable searchTerm={searchTerm} />
             </div>
             <div className="w-full flex items-center justify-center gap-x-6 pb-3">

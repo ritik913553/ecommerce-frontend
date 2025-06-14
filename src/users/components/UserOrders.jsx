@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { getMyOrders } from "../../http";
+
 const UserOrders = () => {
     // Dummy data matching your order model structure
     const dummyOrders = [
@@ -94,7 +97,7 @@ const UserOrders = () => {
                     quantity: 1,
                     price: 89.99,
                     size: "10",
-                    image:  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKFghF5f4bO9B-_aXZ4QTI2Fw-LCW4lPV1zQ&s"
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKFghF5f4bO9B-_aXZ4QTI2Fw-LCW4lPV1zQ&s",
                 },
             ],
             orderStatus: "Pending",
@@ -117,7 +120,16 @@ const UserOrders = () => {
             },
         },
     ];
-
+    const [orders, setOrders] = useState(null);
+    useEffect(() => {
+        const getOrders = async () => {
+            try {
+                const res = await getMyOrders();
+                console.log(res);
+            } catch (error) {}
+        };
+        getOrders();
+    },[]);
     const getStatusColor = (status) => {
         switch (status) {
             case "Delivered":

@@ -115,13 +115,13 @@ const EditProductModal = ({
   if (!product) return null;
 
   return (
-    <div className="absolute p-4 inset-0  flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+    <div className="absolute top-45 sm:top-0 sm:p-4  p-1 inset-0  flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg sm:p-6 w-full sm:max-w-4xl sm:max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Edit Product</h2>
           <button
             onClick={onClose}
-            className="text-red-500 ml-100 hover:text-red-900 transition-colors duration-200 ease-in-out cursor-pointer p-2 rounded-full hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="text-red-500 sm:ml-100 hover:text-red-900 transition-colors duration-200 ease-in-out cursor-pointer p-2 rounded-full hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500"
             aria-label="Close"
           >
             <svg
@@ -143,7 +143,7 @@ const EditProductModal = ({
 
         <form
           onSubmit={handleSubmit}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 p-1 sm:p-6 bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md"
         >
           {/* Product Name */}
           <div className="space-y-2 animate-fadeIn">

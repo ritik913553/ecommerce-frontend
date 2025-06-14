@@ -70,7 +70,7 @@ const MyAccountPage = () => {
     const { user } = useAuth();
     console.log(user);
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
+        <div className="min-h-screen bg-gray-100 p-2 sm:p-8">
             {/* Header */}
             <header className="mb-12 text-center">
                 <h1 className="text-4xl font-bold text-gray-800 mb-2">
@@ -269,7 +269,7 @@ const MyAccountPage = () => {
                     </div>
                 </div>
             ) : (
-                <div className="flex h-full bg-gray-100">
+                <div className="md:flex  h-full bg-gray-100">
                     <SideNavBar
                         currentView={currentView}
                         setCurrentView={setCurrentView}

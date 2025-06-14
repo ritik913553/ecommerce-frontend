@@ -4,21 +4,42 @@ import { Outlet, Navigate } from "react-router-dom";
 import AdminSidebar from "../components/AdminSidebar";
 import AdminNavbar from "../components/AdminNavbar";
 import { useState } from "react";
+import NotificationModal from "../components/NotificationModal";
 
 const AdminLayout = () => {
-    //   const { user } = useAuth(); // custom hook or context
-
-    //   if (!user || user.role !== "admin") {
-    //     return <Navigate to="/login" replace />;
-    //   }
-    const [pageName,setPageName] = useState('Dashboard');
+    const [pageName, setPageName] = useState("Dashboard");
+    const [isNotiOpen, setIsNotiOpen] = useState(false);
+    const [isSideBarOpen, setIsSideBarOpen] = useState(
+        () => window.innerWidth >= 768
+    );
+    const sidebarWidth = isSideBarOpen ? "16rem" : "0";
+    const handleLinkClick = () => {
+        if (window.innerWidth < 768) {
+            setIsSideBarOpen(false);
+        }
+    };
     return (
-        <div className="flex h-screen">
-            <AdminSidebar setPageName={setPageName} />
-            <div className="flex flex-col flex-1">
-                <AdminNavbar pageName={pageName} />
-                <main className="productList box-border p-10 bg-[#F6F6F6] h-full overflow-y-auto ">
-                    <Outlet  /> {/* renders nested admin pages */}
+        <div className="flex h-auto lg:h-screen bg-red-500 w-screen overflow-x-hidden relative">
+            <AdminSidebar
+                setPageName={setPageName}
+                setIsSideBarOpen={setIsSideBarOpen}
+                isSideBarOpen={isSideBarOpen}
+            />
+            <div
+                style={{
+                    width: `calc(100vw - ${sidebarWidth})`,
+                }}
+                className="flex flex-col flex-1"
+                onClick={handleLinkClick}
+            >
+                <AdminNavbar
+                    pageName={pageName}
+                    setIsNotiOpen={setIsNotiOpen}
+                    setIsSideBarOpen={setIsSideBarOpen}
+                />
+                <main className="productList relative w-[100%] box-border p-3 sm:p-10 bg-[#F6F6F6] h-full overflow-y-auto ">
+                    <Outlet /> {/* renders nested admin pages */}
+                    {isNotiOpen && <NotificationModal setIsNotiOpen={setIsNotiOpen} />}
                 </main>
             </div>
         </div>

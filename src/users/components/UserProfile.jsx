@@ -1,8 +1,9 @@
 import { input } from "framer-motion/client";
 import { useRef, useState } from "react";
-import { updatePhoto } from "../../http";
+import { updatePhoto, updateProfile } from "../../http";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const UserProfile = ({ user }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -18,10 +19,10 @@ const UserProfile = ({ user }) => {
     const [previewImage, setPreviewImage] = useState(user?.photo || null);
     const [fileError, setFileError] = useState("");
     const fileInputRef = useRef(null);
-
-    const dispatch = useDispatch()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const handleEditPhotoClick = () => {
-        setFileError(""); 
+        setFileError("");
         fileInputRef.current.click();
     };
     const handleFileChange = (e) => {
@@ -49,14 +50,15 @@ const UserProfile = ({ user }) => {
         reader.readAsDataURL(file);
     };
     const handleUploadPhoto = async (e) => {
-       e.preventDefault();
-       try {
-        const res = await updatePhoto(selectedFile);
-        console.log(res);
-        dispatch(setAuth(res.data))
-       } catch (error) {
-        console.log(error)
-       }
+        e.preventDefault();
+        try {
+            const res = await updatePhoto(selectedFile);
+            console.log(res);
+            dispatch(setAuth(res.data));
+            setIsEditing(false);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleChange = (e) => {
@@ -66,11 +68,16 @@ const UserProfile = ({ user }) => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle profile update here
-        console.log("Profile updated:", formData);
-        setIsEditing(false);
+        try {
+            // Handle profile update here
+            const res = await updateProfile(formData);
+            dispatch(setAuth(res.data));
+            setIsEditing(false);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -146,15 +153,15 @@ const UserProfile = ({ user }) => {
                     )}
                 </div>
 
-                <div className="flex-1">
-                    <div className="flex justify-between items-center mb-6">
+                <div className="flex-1 w-full">
+                    <div className=" flex justify-between items-center mb-6">
                         <h2 className="text-2xl font-bold text-gray-800">
                             Profile Information
                         </h2>
                         {!isEditing && (
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="h-10 px-4 rounded-md border-2 border-gray-800  bg-white text-gray-800 font-semibold text-base cursor-pointer hover:bg-gray-200"
+                                className="py-2 px-4 rounded-md border-2 border-gray-800  bg-white text-gray-800 font-semibold text-base cursor-pointer hover:bg-gray-200"
                             >
                                 Edit Profile
                             </button>
@@ -243,14 +250,14 @@ const UserProfile = ({ user }) => {
                             <div className="flex space-x-3">
                                 <button
                                     type="submit"
-                                    className="h-10 px-4 rounded-md border-2 border-gray-800  bg-white text-gray-800 font-semibold text-base cursor-pointer hover:bg-gray-200"
+                                    className="py-1 text-sm px-4 rounded-md border-2 border-gray-800  bg-white text-gray-800 font-semibold sm:text-base cursor-pointer hover:bg-gray-200"
                                 >
                                     Save Changes
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(false)}
-                                    className="h-10 px-4 rounded-md border-2 border-gray-800  bg-white text-gray-800 font-semibold text-base cursor-pointer hover:bg-gray-200"
+                                    className="py-1 px-4 rounded-md border-2 border-gray-800  bg-white text-gray-800 font-semibold text-base cursor-pointer hover:bg-gray-200"
                                 >
                                     Cancel
                                 </button>
