@@ -65,20 +65,20 @@ const AddProductForm = ({ setIsAddNewProductOpen, onClose,onProductAdded  }) => 
   };
 
   return (
-    <div className=" mx-auto p-6 pt-1 mt-5 bg-white rounded shadow">
-      <div className="flex flex-row">
-        <div className="p-4">
+    <div className=" mx-auto p-1 sm:p-6 pt-1 mt-5 bg-white rounded shadow">
+      <div className="flex bg-red- flex-row">
+        <div className="sm:p-4 p-1   flex-1">
           <h2 className="text-2xl font-semibold mb-4 ">Add New Product</h2>
           <p className="text-sm text-gray-500 mb-6">
             When adding products here, don’t forget to follow the SOP of product
             adding rules to fill in the required field completely.
           </p>
         </div>
-        <div>
+        <div className="">
           {" "}
           <button
             onClick={onClose}
-            className="text-red-500 ml-100 hover:text-red-900 transition-colors duration-200 ease-in-out cursor-pointer p-2 rounded-full hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="text-red-500 sm:ml-100 hover:text-red-900 transition-colors duration-200 ease-in-out cursor-pointer p-2 rounded-full hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500"
             aria-label="Close"
           >
             <svg

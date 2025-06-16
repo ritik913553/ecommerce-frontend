@@ -21,7 +21,11 @@
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.1",
+<<<<<<< HEAD
     "react-toastify": "^11.0.5",
+=======
+    "recharts": "^2.15.3",
+>>>>>>> 7ed57eb5d3d87f1d59ba90378d5c81d3827aa0bd
     "tailwindcss": "^4.1.8"
   },
   "devDependencies": {

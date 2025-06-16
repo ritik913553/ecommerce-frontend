@@ -241,7 +241,7 @@ import {
     FiChevronUp,
     FiSearch,
 } from "react-icons/fi";
-const CustomerTable = ({searchTerm}) => {
+const CustomerTable = ({ searchTerm }) => {
     const [sortConfig, setSortConfig] = useState({
         key: "createdAt",
         direction: "desc",
@@ -303,7 +303,7 @@ const CustomerTable = ({searchTerm}) => {
                 <thead className="bg-gray-50  ">
                     <tr>
                         <th
-                            className="px-6 py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider cursor-pointer"
+                            className="sm:px-6 px-2 sm:py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider cursor-pointer"
                             onClick={() => requestSort("name")}
                         >
                             <div className="flex items-center">
@@ -316,11 +316,11 @@ const CustomerTable = ({searchTerm}) => {
                                     ))}
                             </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
+                        <th className="sm:px-6 px-2 sm:py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
                             Photo
                         </th>
                         <th
-                            className="px-6 py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider cursor-pointer"
+                            className="sm:px-6 px-2 sm:py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider cursor-pointer"
                             onClick={() => requestSort("email")}
                         >
                             <div className="flex items-center">
@@ -333,16 +333,16 @@ const CustomerTable = ({searchTerm}) => {
                                     ))}
                             </div>
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
+                        <th className="sm:px-6 px-2 sm:py-3 py-1 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
                             Role
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
+                        <th className="sm:px-6 px-2 sm:py-3 py-1 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
                             Phone
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
+                        <th className="sm:px-6 px-2 sm:py-3 py-1 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
                             Status
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
+                        <th className="sm:px-6 px-2 sm:py-3 py-1 text-left text-xs font-black text-gray-600 uppercase tracking-wider">
                             Actions
                         </th>
                     </tr>
@@ -350,15 +350,18 @@ const CustomerTable = ({searchTerm}) => {
                 <tbody className="bg-white ">
                     {filteredUsers.map((user) => (
                         <React.Fragment key={user.id}>
-                            <tr className="hover:bg-gray-50">
-                                <td className="px-6 py-4 whitespace-nowrap">
+                            <tr
+                                onClick={() => toggleRowExpand(user.id)}
+                                className="hover:bg-gray-50 "
+                            >
+                                <td className="sm:px-6 sm:py-4 px-3 py-2 whitespace-nowrap">
                                     <div className="flex items-center">
                                         <div className="text-sm font-medium text-gray-900">
                                             {user.name}
                                         </div>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="sm:px-6 sm:py-4 px-3 py-2 whitespace-nowrap">
                                     <div className="flex-shrink-0 h-10 w-10">
                                         <img
                                             className="h-10 w-10 rounded-full"
@@ -370,7 +373,7 @@ const CustomerTable = ({searchTerm}) => {
                                         />
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td className="sm:px-6 sm:py-4 px-3 py-2 whitespace-nowrap text-sm text-gray-500">
                                     {user.email}
                                     {user.isEmailVerified && (
                                         <span className="ml-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
@@ -378,7 +381,7 @@ const CustomerTable = ({searchTerm}) => {
                                         </span>
                                     )}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="sm:px-6 sm:py-4 px-3 py-2 whitespace-nowrap">
                                     <span
                                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                             user.role === "admin"
@@ -389,10 +392,10 @@ const CustomerTable = ({searchTerm}) => {
                                         {user.role}
                                     </span>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td className="sm:px-6 sm:py-4 px-3 py-2 whitespace-nowrap text-sm text-gray-500">
                                     {user.phone || "-"}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td className="sm:px-6 sm:py-4 px-3 py-2 whitespace-nowrap text-sm text-gray-500">
                                     <span
                                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                             user.authProvider === "google"
@@ -403,7 +406,7 @@ const CustomerTable = ({searchTerm}) => {
                                         {user.authProvider}
                                     </span>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td className="sm:px-6 sm:py-4 px-3 py-2 whitespace-nowrap text-right text-sm font-medium">
                                     <div className="flex space-x-2">
                                         <button className="text-blue-600 hover:text-blue-900">
                                             <FiEye />
@@ -432,8 +435,11 @@ const CustomerTable = ({searchTerm}) => {
                             {/* Expanded row with additional details */}
                             {expandedRows.includes(user.id) && (
                                 <tr className="bg-gray-50">
-                                    <td colSpan="7" className="px-6 py-4">
-                                        <div className="grid grid-cols-2 gap-4">
+                                    <td
+                                        colSpan="7"
+                                        className="sm:px-6 sm:py-4 px-3 py-2"
+                                    >
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
                                                 <h4 className="text-sm font-medium text-gray-900">
                                                     Personal Information
@@ -482,7 +488,7 @@ const CustomerTable = ({searchTerm}) => {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="col-span-2">
+                                            <div className="sm:col-span-2">
                                                 <h4 className="text-sm font-medium text-gray-900">
                                                     Address
                                                 </h4>

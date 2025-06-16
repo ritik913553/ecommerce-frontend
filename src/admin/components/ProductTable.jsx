@@ -186,24 +186,24 @@ const ProductTable = ({
   };
 
   return (
-    <table className="min-w-full  text-sm text-left">
+    <table className="min-w-full text-xs sm:text-sm text-left">
       <thead className="bg-[#F6F6F6] text-gray-700 ">
         <tr className="">
-          <th className="p-3">Image</th>
-          <th className="p-3">Name</th>
-          <th className="p-3">Price</th>
-          <th className="p-3">Sizes</th>
-          <th className="p-3">Category</th>
-          <th className="p-3">
+          <th className="p-2 sm:p-3">Image</th>
+          <th className="p-2 sm:p-3">Name</th>
+          <th className="p-2 sm:p-3">Price</th>
+          <th className="p-2 sm:p-3">Sizes</th>
+          <th className="p-2 sm:p-3">Category</th>
+          <th className="p-2 sm:p-3">
             Stock{" "}
             <span className="inline-block cursor-pointer">
               <FaSortNumericUp />
             </span>{" "}
           </th>
-          <th className="p-3">Tags</th>
-          <th className="p-3">Featured</th>
-          <th className="p-3">Rating</th>
-          <th className="p-3">Actions</th>
+          <th className="p-2 sm:p-3">Tags</th>
+          <th className="p-2 sm:p-3">Featured</th>
+          <th className="p-2 sm:p-3">Rating</th>
+          <th className="p-2 sm:p-3">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -213,14 +213,14 @@ const ProductTable = ({
               <img
                 src={prod.images[0]}
                 alt={prod.name}
-                className="h-12 w-12 object-cover rounded-full"
+                className="sm:h-12 sm:w-12 h-8 w-12 object-cover rounded-full"
               />
             </td>
-            <td className="p-3">{prod.name}</td>
-            <td className="p-3">₹{prod.price}</td>
-            <td className="p-3">{prod.sizes.join(", ")}</td>
-            <td className="p-3">{prod.category}</td>
-            <td className="p-3">
+            <td className="p-2 sm:p-3">{prod.name}</td>
+            <td className="p-2 sm:p-3">₹{prod.price}</td>
+            <td className="p-2 sm:p-3">{prod.sizes.join(", ")}</td>
+            <td className="p-2 sm:p-3">{prod.category}</td>
+            <td className="p-2 sm:p-3">
               {prod.stock > 0 ? (
                 <span className="text-green-600 font-semibold">
                   {prod.stock}
@@ -229,17 +229,17 @@ const ProductTable = ({
                 <span className="text-red-500 font-semibold">Out of stock</span>
               )}
             </td>
-            <td className="p-3">
+            <td className=" p-2 sm:p-3">
               {prod.tags.length > 0 ? prod.tags.join(", ") : "-"}
             </td>
-            <td className="p-3">
+            <td className="p-2 sm:p-3">
               {prod.isFeatured ? (
                 <span className="text-green-500 font-bold">Yes</span>
               ) : (
                 "No"
               )}
             </td>
-            <td className="p-3">{prod.ratings} ★</td>
+            <td className="p-2 sm:p-3">{prod.ratings} ★</td>
             <td className="p-3 space-x-3">
               <button
                 onClick={() => handleEditClick(prod)}
