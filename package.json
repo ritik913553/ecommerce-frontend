@@ -13,7 +13,6 @@
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
-    "firebase": "^11.9.1",
     "framer-motion": "^12.16.0",
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
@@ -22,10 +21,13 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.1",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "react-toastify": "^11.0.5",
 =======
     "recharts": "^2.15.3",
 >>>>>>> 7ed57eb5d3d87f1d59ba90378d5c81d3827aa0bd
+=======
+>>>>>>> parent of 2a87a92 (Adding the notification)
     "tailwindcss": "^4.1.8"
   },
   "devDependencies": {

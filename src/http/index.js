@@ -61,7 +61,4 @@ export const deleteProduct = (id) => api.delete(`/api/products/${id}`);
 export const updateProductStock = (id, stock) =>
     api.patch(`/api/products/stock/${id}`, { stock });
 
-export const saveFCMtoken = (token) =>
-  api.post("/api/firebase/save-token", { token });
-
 export default api;
