@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AdminLayout from "./admin/layouts/AdminLayout";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import AdminDashboard from "./admin/pages/AdminDashboard";
@@ -10,6 +10,11 @@ import HomePage from "./users/pages/HomePage";
 import MyAccountPage from "./users/pages/MyAccountPage";
 import { useLoadingWithRefresh } from "./hooks/useLoadingWithRefresh";
 import useAuth from "./hooks/useAuth";
+import { requestFCMToken ,onMessageListener } from "./utils/firebaseUtils";
+import { toast } from "react-toastify";
+import {  onMessage } from "firebase/messaging";
+
+
 
 const AdminProtectedRoute = () => {
     const { user } = useAuth();
@@ -20,11 +25,32 @@ const AdminProtectedRoute = () => {
 };
 
 const App = () => {
+  useEffect(() => {
+  const initNotifications = async () => {
+    await requestFCMToken();
+
+    onMessageListener((payload) => {
+      console.log("Foreground notification:", payload);
+
+      toast(
+        <div>
+          <strong>{payload.notification?.title}</strong>
+          <div>{payload.notification?.body}</div>
+        </div>,
+        { position: "top-right" }
+      );
+    });
+  };
+
+  initNotifications();
+}, []);
+
     const { loading } = useLoadingWithRefresh();
     if (loading) {
         return <div>Loading...</div>; // or a spinner
     }
     return (
+        
         <Routes>
             <Route element={<AdminProtectedRoute />}>
                 <Route path="/admin" element={<AdminLayout />}>
